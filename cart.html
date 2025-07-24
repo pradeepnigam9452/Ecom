@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+</head>
+    <style>
+        h1{
+            text-align: center;
+            color: white;
+            text-shadow: 1px 1px 2px black, 0 0 25px rgb(55, 55, 87), 0 0 5px darkblue;
+        }
+        img{
+            height: 250px;
+            width: 250px;
+        }
+        .cont{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: #dfe7f2;
+            background: linear-gradient(213deg, rgba(223, 231, 242, 1) 73%, rgba(148, 187, 233, 1) 100%);
+        }
+        .box{
+            margin: 20px;
+            text-align: center;
+            padding: 25px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+            border-radius: 20px;
+        }
+        button{
+            font-size: 14px;
+            width: 100px;
+            height: 38px;
+            margin: 15px;
+            border: 1px solid rgb(169, 174, 198);
+            border-radius: 8px;
+            background: #91d6ed;
+            background: linear-gradient(51deg, rgb(190, 213, 220) 0%, rgb(140, 143, 169) 100%);
+        }
+        button:hover{
+            transform: scale(1.06);
+            border: 2px solid rgb(56, 57, 62);
+            border-radius: 8px;
+            background: #9cb1b8;
+            background: linear-gradient(300deg, rgba(156, 177, 184, 1) 0%, rgba(189, 190, 240, 1) 100%);
+        }
+        #ShopButton{
+            position: fixed;
+            top: 2px;          
+            right: 2px;        
+            z-index: 1000;      
+        }
+    </style>
+<body>
+
+    <h1><u>Cart-Item</u></h1>
+    <h1 id="total">Toatal cart value : </h1>
+
+    <a href="product.html">
+        <button id="ShopButton">Shop-Item</button>
+    </a>
+
+    <div class="cont"></div>
+
+</body>
+</html>
+<script>
+    let cart = JSON.parse(localStorage.getItem("cartarr")) || [];
+    console.log(cart);
+
+    displayCard(cart);
+
+    let cartTotal = cart.reduce((acc,ele)=>{
+        return acc + ele.price
+    },0)
+
+    document.querySelector("#total").innerText = `Total cart value: ${cartTotal}`;
+    console.log(`Total cart value: ${cartTotal}`);
+
+    function displayCard(arr){
+            document.querySelector(".cont").innerText=""
+            arr.forEach((ele,i) => {
+                const box = document.createElement("div");
+                box.classList.add("box");
+
+                const image = document.createElement("img");
+                image.setAttribute("src",ele.image);
+
+                const title = document.createElement("h3");
+                title.innerText =`Title: ${ele.title}`;
+
+                const description = document.createElement("p");
+                description.innerText =`Description: ${ele.description}`;
+                const category = document.createElement("h4");
+                category.innerText =`Category: ${ele.category}`;
+
+                const price = document.createElement("button");
+                price.innerText =`Price: ${ele.price}`;
+
+                const rating = document.createElement("button");
+                rating.innerText =`Rating: ${ele.rating.rate}`;
+
+
+                // delete
+                const add = document.createElement("button");
+                add.innerText =`Delete`;
+
+                add.addEventListener("click",function (){
+                    cart.splice(i,1);
+                    localStorage.setItem("cartarr", JSON.stringify(cart))
+
+                    cartTotal = cart.reduce((acc,ele)=>{
+                        return acc +ele.price;
+                    },0);
+
+                    document.querySelector("#total").innerText = `Total cart value : ${cartTotal}`
+                    console.log(`Total cart value : ${cartTotal}`)
+                    displayCard(cart);
+                })
+
+
+                box.append(image, title, description, category, price, rating, add);
+                document.querySelector(".cont").append(box);
+            });
+        }
+</script>
